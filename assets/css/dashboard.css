@@ -1,0 +1,233 @@
+form {
+display: grid;
+grid-template-columns: 200px 1fr;
+}
+label {
+grid-column: 1 / 2;
+}
+
+td{
+text-align: center;
+vertical-align: top;
+}
+    
+input, button {
+grid-column: 2 / 3;
+}
+input[type="checkbox"], input[type="radio"] {
+width: auto;
+margin-left: 10em;
+    }
+input[type="checkbox"] ~ label, input[type="radio"] ~ label {
+width: auto;
+padding-left: 0.4em;
+}
+.box2{
+	float: left;
+}
+.box3{
+	float: left;
+	left: 45%;
+	position: relative;
+}
+
+.cp_ipselect {
+	position: relative;
+	width: 90%;
+	margin: 2em auto;
+	text-align: center;
+}
+.cp_sl06 {
+	position: relative;
+	font-family: inherit;
+	background-color: transparent;
+	width: 100%;
+	padding: 10px 10px 10px 0;
+	font-size: 12px;
+	border-radius: 0;
+	border: none;
+	border-bottom: 1px solid rgba(0,0,0, 0.3);
+}
+.cp_sl06:focus {
+	outline: none;
+	border-bottom: 1px solid rgba(0,0,0, 0);
+}
+.cp_ipselect .cp_sl06 {
+	appearance: none;
+	-webkit-appearance:none
+}
+.cp_ipselect select::-ms-expand {
+	display: none;
+}
+.cp_ipselect:after {
+	position: absolute;
+	top: 18px;
+	right: 10px;
+	width: 0;
+	height: 0;
+	padding: 0;
+	content: '';
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-top: 6px solid rgba(0, 0, 0, 0.3);
+	pointer-events: none;
+}
+.cp_sl06_selectlabel {
+	color: rgba(0,0,0, 0.5);
+	font-size: 18px;
+	font-weight: normal;
+	position: absolute;
+	pointer-events: none;
+	left: 0;
+	top: 10px;
+	transition: 0.2s ease all;
+}
+.cp_sl06:focus ~ .cp_sl06_selectlabel, .cp_sl06:valid ~ .cp_sl06_selectlabel {
+	color: #da3c41;
+	top: -20px;
+	transition: 0.2s ease all;
+	font-size: 14px;
+}
+.cp_sl06_selectbar {
+	position: relative;
+	display: block;
+	width: 100%;
+}
+.cp_sl06_selectbar:before, .cp_sl06_selectbar:after {
+	content: '';
+	height: 2px;
+	width: 0;
+	bottom: 1px;
+	position: absolute;
+	background: #da3c41;
+	transition: 0.2s ease all;
+}
+.cp_sl06_selectbar:before {
+	left: 50%;
+}
+.cp_sl06_selectbar:after {
+	right: 50%;
+}
+.cp_sl06:focus ~ .cp_sl06_selectbar:before, .cp_sl06:focus ~ .cp_sl06_selectbar:after {
+	width: 50%;
+}
+.cp_sl06_highlight {
+	position: absolute;
+	top: 25%;
+	left: 0;
+	pointer-events: none;
+	opacity: 0.5;
+}
+
+.loading {
+	height: 100vh;
+	width: 100vw;
+	font-family: Helvetica;
+}
+
+.loader {
+	height: 20px;
+	width: 250px;
+	position: relative;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+}
+
+.loader--dot {
+	animation-name: loader;
+	animation-timing-function: ease-in-out;
+	animation-duration: 3s;
+	animation-iteration-count: infinite;
+	height: 20px;
+	width: 20px;
+	border-radius: 100%;
+	background-color: black;
+	position: absolute;
+	border: 2px solid white;
+}
+
+.loader--dot:first-child {
+	background-color: #8cc759;
+	animation-delay: 0.5s;
+}
+
+.loader--dot:nth-child(2) {
+	background-color: #8c6daf;
+	animation-delay: 0.4s;
+}
+
+.loader--dot:nth-child(3) {
+	background-color: #ef5d74;
+	animation-delay: 0.3s;
+}
+
+.loader--dot:nth-child(4) {
+	background-color: #f9a74b;
+	animation-delay: 0.2s;
+}
+
+.loader--dot:nth-child(5) {
+	background-color: #60beeb;
+	animation-delay: 0.1s;
+}
+
+.loader--dot:nth-child(6) {
+	background-color: #fbef5a;
+	animation-delay: 0s;
+}
+
+.loader--text {
+	position: absolute;
+	top: 200%;
+	left: 0;
+	right: 0;
+	width: 4rem;
+	margin: auto;
+}
+
+.loader--text:after {
+	content: "Loading";
+	font-weight: bold;
+	animation-name: loading-text;
+	animation-duration: 3s;
+	animation-iteration-count: infinite;
+}
+
+@keyframes loader {
+	15% {
+		transform: translateX(0);
+	}
+
+	45% {
+		transform: translateX(230px);
+	}
+
+	65% {
+		transform: translateX(230px);
+	}
+
+	95% {
+		transform: translateX(0);
+	}
+}
+
+@keyframes loading-text {
+	0% {
+		content: "Loading";
+	}
+
+	25% {
+		content: "Loading.";
+	}
+
+	50% {
+		content: "Loading..";
+	}
+
+	75% {
+		content: "Loading...";
+	}
+}

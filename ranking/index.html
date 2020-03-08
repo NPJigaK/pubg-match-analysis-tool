@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scal=1">
+    <title>PUBGランキングシステム</title>
+
+    <!--jquery-->
+    <script type="text/javascript" src="../assets/vendor/jquery-3.3.1.min.js"></script>
+
+    <!--必須JS-->
+    <script src="../assets/js/gesStatus.js"></script>
+    <!--script type="text/javascript" src="//cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.18/cr-1.5.0/datatables.min.js"></script>-->
+
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/fixedheader/3.1.5/js/dataTables.fixedHeader.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
+    <script type="text/javascript"
+        src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/js/dataTables.checkboxes.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/loading.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/css/dashboard.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/css/record.css" />
+    <!--link rel="stylesheet" type="text/css" href="//cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.18/cr-1.5.0/datatables.min.css" -->
+    <link rel="stylesheet" type="text/css"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/fixedheader/3.1.5/css/fixedHeader.bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css" />
+    <link type="text/css"
+        href="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/css/dataTables.checkboxes.css"
+        rel="stylesheet" />
+
+
+    <script>
+        window.addEventListener('DOMContentLoaded', async function () {
+            //*---------------------------*//
+            //ログインチェック
+            //login_check();
+        })
+
+        window.addEventListener('load', function () {
+            //*---------------------------*//
+            //日付入力
+            //getDate();
+
+        })
+        //*---------------------------*//
+        //戻ってきたときにもう一度同じリスト表示
+        window.onpageshow = function () {
+            //*---------------------------*//
+        }
+    </script>
+</head>
+
+<body>
+
+    <div id="main-content"></div><br>
+    <input type="button" value="戻る" onclick="history.back()"><br>
+    <div class="box_dot">
+        <input type="button" id="fulljoin" value="全試合出場した選手でフィルター" class="steinsButton">
+        <input type="button" id="clear" value="フィルタークリア" class="steinsButton">
+    </div><br>
+    <div class="box_dot">
+        <input type="button" id="reslutDownload" value="今表示されているランキングを良い感じにする" class="steinsButton">
+        <input type="button" id="record" value="詳細個人戦績を確認" class="steinsButton">
+    </div>
+    <table id="foo-table" class="table table-striped table-bordered nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>参加試合数</th>
+                <th>平均キル[A]</th>
+                <th>平均ダメージ[B]</th>
+                <th>平均ノックアウト[C]</th>
+                <th>平均アシスト[D]</th>
+                <th>平均生存時間[E]</th>
+                <th>最大キル数[F]</th>
+                <th>偏差値計[A]~[F]</th>
+            </tr>
+        </thead>
+    </table>
+
+    <script>
+        var jsonRankingData;
+        function backSetData(data) {
+            //jsonData = data;
+            //setList();
+        }
+        function setLoading() {
+            document.getElementById("main-content").innerHTML =
+                `<div class="loading"> <div class="loader"> <div class="loader--dot"></div><div class="loader--dot"></div><div class="loader--dot"></div><div class="loader--dot"></div><div class="loader--dot"></div><div class="loader--dot"></div><div class="loader--text"></div></div></div>`;
+        }
+        function removeLoading() {
+            document.getElementById("main-content").innerHTML = ``;
+        }
+
+        $('#togglebtn').click(function () {
+            $(this).toggleClass('on');
+            $('#toggletext').toggle('fast');
+        });
+
+        function orgRound(value, base) {
+            return (Math.round(value * base) / base).toFixed(2);
+        }
+        function secondToMinutesAndSeconds(second) {
+            if (second >= 3600) {
+                return "0:00"
+            }
+
+            var seconds = parseInt((second) % 60, 10)
+            var minutes = parseInt((second / 60) % 60, 10)
+
+            seconds = (seconds < 10) ? "0" + seconds : seconds
+
+            return minutes + ":" + seconds;
+        }
+        init();
+        var urls;
+        async function init() {
+            await setLoading();
+            var checkList = JSON.parse(await sessionStorage.getItem("old_checkList"));
+            console.log(checkList)
+            urls = new Array(0);
+            for (var i = 0; i < checkList.length; i++) {
+                urls.push(checkList[i].matchId);
+            }
+            //console.log(urls)
+            if (urls.length === 0) {
+            } else {
+                jsonRankingData = await getStatus(checkList[0].platform, urls);
+
+                jsonRankingData.forEach(element => {
+                    element.kills = orgRound(element.kills, 100);
+                    element.damageDealt = orgRound(element.damageDealt, 100);
+                    element.DBNOs = orgRound(element.DBNOs, 100);
+                    element.assists = orgRound(element.assists, 100);
+                    element.timeSurvived = secondToMinutesAndSeconds(element.timeSurvived);
+                    element.numdeviation = orgRound(element.numdeviation, 100);
+                });
+
+                setList();
+                removeLoading();
+            }
+        };
+        var table = "";
+        function setList() {
+            //console.log(jsonData)
+            if (table != "") {
+                table.destroy();
+                console.log("destroy")
+            }
+
+            jQuery(function ($) {
+                // デフォルトの設定を変更
+                $.extend($.fn.dataTable.defaults, {
+                    language: {
+                        url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+                    }
+                });
+
+                table = $("#foo-table").DataTable({
+                    data: jsonRankingData,
+                    columns: [
+                        { data: "name" },
+                        { data: "count" },
+                        { data: "kills" },
+                        { data: "damageDealt" },
+                        { data: "DBNOs" },
+                        { data: "assists" },
+                        { data: "timeSurvived" },
+                        { data: "maxkills" },
+                        { data: "numdeviation" }
+
+                    ],
+                    //各カラムの横幅
+                    columnDefs: [
+                        { targets: 0, width: 150 },
+                        { targets: 1, width: 10 },
+                        { targets: 2, width: 40 },
+                        { targets: 3, width: 100 },
+                        { targets: 4, width: 40 },
+                        { targets: 5, width: 40 },
+                        { targets: 6, width: 70 },
+                        { targets: 7, width: 40 },
+                        { targets: 8, width: 100 }
+                    ],
+                    // ページング機能 無効
+                    responsive: true,
+                    paging: false,
+                    destroy: true,
+                    retrieve: true,
+                    order: [
+                        [8, "desc"],
+                    ]
+                });
+
+                $(document).on('click', '#fulljoin', function () {
+                    table.column(1).search(urls.length).draw();
+                });
+
+                $(document).on('click', '#clear', function () {
+                    table.search('').columns().search('').draw(true);
+                });
+                $(document).on('click', '#record', function () {
+                    window.location.href = '../record';
+                });
+                $(document).on('click', '#reslutDownload', function () {
+                    var rankingNames = [];
+                    for (var table_row_cnt = 0; table_row_cnt < $("#foo-table tbody").children().length; table_row_cnt++) {
+                        rankingNames.push($("#foo-table tbody tr").eq(table_row_cnt).children().eq(0).text());
+                    }
+                    if (rankingNames.length === 0 || rankingNames[0] === "データはありません。") {
+                        alert("このリストではランキングを表示できないよ！")
+                    } else {
+                        console.log(rankingNames)
+                        sessionStorage.setItem("old_rankingNames", rankingNames);
+                        window.location.href = 'download';
+                    }
+                });
+            });
+            removeLoading();
+        }
+
+    </script>
+</body>
+
+</html>

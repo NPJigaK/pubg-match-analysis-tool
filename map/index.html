@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <title>MAP分析</title>
+    
+    <!--jquery-->
+    <script type="text/javascript" src="../assets/vendor/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.6.0/fabric.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/tab.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="../assets/css/map.css" media="all" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.2/math.min.js"></script>
+    <script src="../assets/js/map.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', async function () {
+            //*---------------------------*//
+
+
+            // 画面操作を無効する
+            lockScreen("lockCanvas");
+        })
+    </script>
+</head>
+
+<body>
+    <div class="tabs">
+        <input id="init" type="radio" name="tab_item" value="0" checked>
+        <label class="tab_item" for="init">初動</label>
+        <input id="track" type="radio" value="1" name="tab_item">
+        <label class="tab_item" for="track">トラッキング</label>
+        <input id="position" type="radio" value="2" name="tab_item">
+        <label class="tab_item" for="position">ポジション to タイム(β)</label>
+        <div class="map_other">
+            <input type="button" value="戻る" onclick="history.back()" style="width: 100px;height:40px">
+            <button class="down_size" type="button">-</button>
+            <button class="up_size" type="button">+</button>
+            <input type="checkbox" id="circle" checked="checked" /><label for="circle">安置円</label>
+            <input type="checkbox" id="route" checked="checked" /><label for="route">航路</label>
+            <input type="button" id="download_canvas" onclick="saveImage()" value="ダウンロード"
+                style="width: 100px;height:40px">
+        <!--
+            <input type="button"  onclick="saveMAXTeamImage()" value="ダウンロード" style="width: 100px;height:40px">
+        -->
+        </div>
+        <div class="map_canvas">
+            <canvas class="canvas" id="map_canvas" style="border: 1px solid #cccccc"></canvas>
+        </div>
+
+
+        <div class="tab_content" id="map_init_content">
+            <div id="initTable"></div>
+        </div>
+        <div class="tab_content" id="map_track_content">
+            <div id="trackTable"></div>
+        </div>
+        <div class="tab_content" id="map_position_content">
+            <div class="map_slider">
+                <div id="wkSlider2"></div>
+                <div id="wkValue"></div>
+            </div>
+            <div id="positionTable"></div>
+        </div>
+    </div>
+
+    <script>
+        //--------------------------------------------------------//
+        //フェーズ毎の色を設定
+        var colors = ["#FF8000", "#FFFF00", "#00FF00", "#00FFBF", "#0000FF", "#FF00FF", "#FF0040", "#000000", "#FFFFFF"];
+        //MAPごとのcanvas微調整用
+        var map_zoom_scale;
+        //MAPごとのcanvasObject微調整用
+        var map_magnification;
+        //team毎playerName
+        var team_players;
+        //team毎playerムーヴデータ
+        var playersData;
+        //solo,duo.squad.other判定用
+        var maxTeam;
+        //console.log(JSON.parse(localStorage.getItem(`matchJSON`)));
+        var matchJSON = JSON.parse(sessionStorage.getItem(`old_map_analyze`));
+        //positionTable_Selected_Flags
+        var positionTable_Selected_Flags;
+        //START_TIME
+        var START_TIME;
+        //画像オブジェクト作成
+        var mapImg = new Image();
+        mapImg.crossOrigin = 'anonymous';
+        var canvas_width;
+        var canvas_height;
+
+        //マップimgセッティング
+        setMapImgsrc_zoomscale(matchJSON.mapName);
+
+        //--------------------------------------------------------//
+        //各Icon設定
+        //var numIcons = setnumIcons();
+        //var maskIcons = setmaskIcons();
+        var numIcons_map = setnumIcons_map();
+        var maskIcons_map = setmaskIcons_map();
+        var yajirusi_Img = setyajirusi();
+        var killIcon = setkillIcon();
+        var endIcon_map = setendIcon_map();
+
+        var canvas = new fabric.Canvas('map_canvas', {
+            selectionKey: 'ctrlKey'
+        });
+
+        canvas.selection=false;
+
+
+
+
+        mapImg.onload = async function () {
+            await buttonInit();
+            canvas_width = await mapImg.width;
+            canvas_height = await mapImg.height;
+            canvas.setHeight(canvas_height);
+            canvas.setWidth(canvas_width);
+
+            var MAPIMG = new fabric.Image(mapImg, {
+                selectable: false,
+                name: "MAP"
+            });
+            await canvas.add(MAPIMG);
+
+
+            await init_map_zoom_scale();
+            await drawInit();
+            // 画面操作を有効にする
+            await unlockScreen("lockCanvas");
+        }
+        async function drawInit() {
+            mapJSON = await getMapJson(matchJSON.assetURL);
+            //console.log(mapJSON)
+            var gameState = await getGameStates(mapJSON);
+            drawGameState(gameState);
+            var route = await getRoute(mapJSON);
+            drawRoute(route);
+
+            characters = await getCharacters(mapJSON);
+            //console.log(characters);
+            START_TIME = new Date(characters[0]._D);
+            //console.log(START_TIME);
+            team_players = await getPlayerTeams(characters, JSON.parse(matchJSON.roster));
+            //console.log(team_players);
+
+            positionTable_Selected_Flags = Array(team_players.length);
+            positionTable_Selected_Flags.fill(false);
+
+            playersData = await getPlayersData(mapJSON, team_players);
+            //console.log(playersData);
+
+            maxTeam = getMaxTeam(team_players)
+            //console.log(maxTeam);
+
+            proc_Init();
+        }
+
+        async function proc_Init() {
+            drawInitialPoint(playersData, team_players);
+            document.getElementById("initTable").innerHTML = resultClickTableInnsert(team_players, maxTeam, "InitTable");
+        }
+        async function proc_Track() {
+            document.getElementById("trackTable").innerHTML = resultClickTableInnsert(team_players, maxTeam, "TrackTable");
+        }
+        async function proc_Position() {
+            document.getElementById("positionTable").innerHTML = resultClickTableInnsert(team_players, maxTeam, "PositionTable");
+            $(async function () {
+                var max = await getMatchTime(characters[0]._D, characters[1]._D)
+
+                $("#wkSlider2").slider({
+                    max: max + 15000, //最大値
+                    min: 0, //最小値
+                    value: 0, //初期値
+                    step: 1, //幅
+
+                    slide: function (event, ui) {
+                        $("#wkValue").html("現在値：" + millisToMinutesAndSeconds(ui.value));
+
+                        setPosition(Math.floor(ui.value / 1000));
+                    },
+                    create: function (event, ui) {
+                        $("#wkValue").html("初期値：0:00");
+                    },
+                    change: function (event, ui) {
+                        //$("#wkValue").html("現在値：" + ui.value);
+                    }
+                });
+            });
+        }
+
+    </script>
+
+
+    <script src="../assets/js/map_zoom.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>PUBGランキングダウンロード</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment-with-locales.min.js"></script>
+    <script src="../../assets/vendor/html2canvas.min.js"></script>
+    <!--jquery-->
+    <script type="text/javascript" src="../../assets/vendor/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/locale/ja.js"></script>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+
+    <!--必須JS-->
+    <script src="../../assets/js/gesStatus.js"></script>
+</head>
+
+<body>
+    <div style="clear:both"></div>
+
+    <input type="button" value="戻る" onclick="history.back()">
+
+    <div><span style="font-size:30px">ランキング名</span><input id="input" type="text" style="font-size:50px" value="総合戦績">
+    </div>
+    <br><br>
+
+    <div id="tablereslt"></div>
+    <div id="tablehtml"></div>
+    <script type="text/javascript">
+        var rankingNames;
+        var jsonRankingData;
+
+        /////////////////////////////////////////////
+        init();
+        var urls;
+        async function init() {
+
+            var checkList = JSON.parse(await sessionStorage.getItem("old_checkList"));
+            //console.log(JSON.stringify(checkList))
+            urls = new Array(0);
+            for (var i = 0; i < checkList.length; i++) {
+                urls.push(checkList[i].matchId);
+            }
+            //console.log(urls)
+            if (urls.length === 0) {
+            } else {
+                jsonRankingData = await getStatus(checkList[0].platform, urls);
+
+                jsonRankingData.forEach(element => {
+                    element.kills = orgRound(element.kills, 100);
+                    element.damageDealt = orgRound(element.damageDealt, 100);
+                    element.DBNOs = orgRound(element.DBNOs, 100);
+                    element.assists = orgRound(element.assists, 100);
+                    element.timeSurvived = secondToMinutesAndSeconds(element.timeSurvived);
+                    element.numdeviation = orgRound(element.numdeviation, 100);
+                });
+
+                startpubg();
+            }
+        };
+
+        async function startpubg() {
+            rankingNames = sessionStorage.getItem("old_rankingNames");
+
+            await scrimOverallRank();
+
+            var tableIDs = document.querySelectorAll("[id^=farstTable]");
+            for (var i = 0, j = 0; i < tableIDs.length; i++) {
+                $(`#farstTable${j}`).css('width', $(`#pubg_table${j}`).width());
+                $(`#farstTable${j}`).css('padding', '5px')
+                j += 20;
+            }
+        }
+
+        async function scrimOverallRank() {
+            playerdata_num_array_sum = jsonRankingData.filter(function (value) {
+                return rankingNames.includes(value.name);
+            });
+            var tableHtml = settable(playerdata_num_array_sum);
+            document.getElementById("tablereslt").innerHTML = tableHtml;
+            //document.getElementById("tablehtml").innerText = tableHtml;
+            var numplayer = playerdata_num_array_sum.length
+            await playerdata_num_array_sum.sort(function (a, b) {
+                if (Number(a.kills) > Number(b.kills)) return -1;
+                if (Number(a.kills) < Number(b.kills)) return 1;
+                return 0;
+            });
+
+            for (var i = 0; i < numplayer; i++) {
+                document.getElementById(`ave_kill${(i + 1)}name`).innerText = playerdata_num_array_sum[i].name + "　";
+                document.getElementById(`ave_kill${(i + 1)}`).innerText = playerdata_num_array_sum[i].kills;
+            }
+
+            await playerdata_num_array_sum.sort(function (a, b) {
+                if (Number(a.DBNOs) > Number(b.DBNOs)) return -1;
+                if (Number(a.DBNOs) < Number(b.DBNOs)) return 1;
+                return 0;
+            });
+            for (var i = 0; i < numplayer; i++) {
+                document.getElementById(`ave_knockout${(i + 1)}name`).innerText = playerdata_num_array_sum[i].name + "　";
+                document.getElementById(`ave_knockout${(i + 1)}`).innerText = (playerdata_num_array_sum[i].DBNOs);
+            }
+
+            await playerdata_num_array_sum.sort(function (a, b) {
+                if (Number(a.assists) > Number(b.assists)) return -1;
+                if (Number(a.assists) < Number(b.assists)) return 1;
+                return 0;
+            });
+            for (var i = 0; i < numplayer; i++) {
+                document.getElementById(`ave_assist${(i + 1)}name`).innerText = playerdata_num_array_sum[i].name + "　";
+                document.getElementById(`ave_assist${(i + 1)}`).innerText = (playerdata_num_array_sum[i].assists);
+            }
+
+            await playerdata_num_array_sum.sort(function (a, b) {
+                if (Number(a.damageDealt) > Number(b.damageDealt)) return -1;
+                if (Number(a.damageDealt) < Number(b.damageDealt)) return 1;
+                return 0;
+            });
+            for (var i = 0; i < numplayer; i++) {
+                document.getElementById(`ave_damage${(i + 1)}name`).innerText = playerdata_num_array_sum[i].name + "　";
+                document.getElementById(`ave_damage${(i + 1)}`).innerText = (playerdata_num_array_sum[i].damageDealt);
+            }
+
+            await playerdata_num_array_sum.sort(function (a, b) {
+                if (getTimeToSecond(a.timeSurvived) > getTimeToSecond(b.timeSurvived)) return -1;
+                if (getTimeToSecond(a.timeSurvived) < getTimeToSecond(b.timeSurvived)) return 1;
+                return 0;
+            });
+            for (var i = 0; i < numplayer; i++) {
+                document.getElementById(`ave_survtime${(i + 1)}name`).innerText = playerdata_num_array_sum[i].name + "　";
+                document.getElementById(`ave_survtime${(i + 1)}`).innerText = (playerdata_num_array_sum[i].timeSurvived);
+            }
+
+            await playerdata_num_array_sum.sort(function (a, b) {
+                if (Number(a.maxkills) > Number(b.maxkills)) return -1;
+                if (Number(a.maxkills) < Number(b.maxkills)) return 1;
+                return 0;
+            });
+            for (var i = 0; i < numplayer; i++) {
+                document.getElementById(`max_kill${(i + 1)}name`).innerText = playerdata_num_array_sum[i].name + "　";
+                document.getElementById(`max_kill${(i + 1)}`).innerText = playerdata_num_array_sum[i].maxkills;
+            }
+
+            await playerdata_num_array_sum.sort(function (a, b) {
+                if (Number(a.numdeviation) > Number(b.numdeviation)) return -1;
+                if (Number(a.numdeviation) < Number(b.numdeviation)) return 1;
+                return 0;
+            });
+            for (var i = 0; i < numplayer; i++) {
+                document.getElementById(`deviation${(i + 1)}name`).innerText = playerdata_num_array_sum[i].name + "　";
+                document.getElementById(`deviation${(i + 1)}`).innerText = (playerdata_num_array_sum[i].numdeviation);
+            }
+
+
+            // IE 9+
+            $(function () {
+                var $input = $('#input');
+                var $output = $('.output');
+                $input.on('input', function (event) {
+                    var value = $input.val();
+                    $output.html(`${value}<span style="font-size:10px;"></span></h2>`);
+                    //console.log(value)
+                });
+            });
+
+        }
+
+        function settable(playerdata_num_array_sum) {
+            var html = ``;
+
+            for (var i = 0; i < playerdata_num_array_sum.length; i++) {
+                if (i % 20 === 0 && i !== 0) {
+                    html += `</tbody></table></div></div><br>`
+
+                }
+
+                if (i % 20 == 0 || i == 0) {
+                    html += `<input type="button" value="↓この画像をダウンロード" onclick="getDisplayImage(${i})"><div id="farstTable${i}"><h2 class="output" style="float:left">総合戦績<span style="font-size:10px;"></span></h2><div class="pubg_table"><table _fixedhead="rows:0; cols:1" id="pubg_table${i}">
+                        
+                        <thead><tr>
+                            <th style=" width: 50px; font-size: 11px">make by <br>@KagiJPN</th>
+                            <th colspan="2">A：平均キル数</th>
+                            <th colspan="2">B：平均ノックアウト数</th>
+                            <th colspan="2">C：平均アシスト数</th>
+                            <th colspan="2">D：平均与ダメージ</th>
+                            <th colspan="2">E：平均生存時間</th>
+                            <th colspan="2">F：1試合最大キル数</th>
+                            <th colspan="2">A～F 偏差値計</th>
+                        </tr></thead><tbody>
+                        `
+                }
+                html += `<tr>
+            <th>${i + 1}th</th>
+            <td class="brs1" id="ave_kill${i + 1}name" value=""></td>
+            <td class="bls1" id="ave_kill${i + 1}" value=""></td>
+            <td class="brs1" id="ave_knockout${i + 1}name" value=""></td>
+            <td class="bls1" id="ave_knockout${i + 1}" value=""></td>
+            <td class="brs1" id="ave_assist${i + 1}name" value=""></td>
+            <td class="bls1" id="ave_assist${i + 1}" value=""></td>
+            <td class="brs1" id="ave_damage${i + 1}name" value=""></td>
+            <td class="bls1" id="ave_damage${i + 1}" value=""></td>
+            <td class="brs1" id="ave_survtime${i + 1}name" value=""></td>
+            <td class="bls1" id="ave_survtime${i + 1}" value=""></td>
+            <td class="brs1" id="max_kill${i + 1}name" value=""></td>
+            <td class="bls1" id="max_kill${i + 1}" value=""></td>
+            <td class="brs1" id="deviation${i + 1}name" value=""></td>
+            <td class="bls1" id="deviation${i + 1}" value=""></td>
+        </tr>`
+            }
+            if (i % 20 !== 0) {
+                html += `</tbody></table></div><br>`
+            }
+            return html;
+        }
+
+
+
+        function orgRound(value, base) {
+            return (Math.round(value * base) / base).toFixed(2);
+        }
+
+
+        function getTimeToSecond(TimeStr) {
+            var timeArray = TimeStr.split(":");
+            return parseInt(timeArray[0]) * 60 + parseInt(timeArray[1])
+        }
+
+        function secondToMinutesAndSeconds(second) {
+            if (second >= 3600) {
+                return "0:00"
+            }
+
+            var seconds = parseInt((second) % 60, 10)
+            var minutes = parseInt((second / 60) % 60, 10)
+
+            seconds = (seconds < 10) ? "0" + seconds : seconds
+
+            return minutes + ":" + seconds;
+        }
+
+        function getDisplayImage(num) {
+            //html2canvas実行
+            console.log(document.getElementById(`farstTable${num}`))
+            html2canvas(document.getElementById(`farstTable${num}`)).then(function (canvas) {
+                downloadImage(canvas.toDataURL())// base64形式で描画内容を出力する
+            });
+        }
+
+        function downloadImage(data) {
+            var fname = `${moment(new Date())}.png`;
+            var encdata = atob(data.replace(/^.*,/, ''));
+            var outdata = new Uint8Array(encdata.length);
+            for (var i = 0; i < encdata.length; i++) {
+                outdata[i] = encdata.charCodeAt(i);
+            }
+            var blob = new Blob([outdata], ["image/png"]);
+
+            if (window.navigator.msSaveBlob) {
+                //IE用
+                window.navigator.msSaveOrOpenBlob(blob, fname);
+            } else {
+                //それ以外？
+                document.getElementById("getImage").href = data; //base64そのまま設定
+                document.getElementById("getImage").download = fname; //ダウンロードファイル名設定
+                document.getElementById("getImage").click(); //自動クリック
+            }
+        }
+    </script>
+    <a id="getImage" href="" style="display:none;" download="image.jpeg">画像保存</a>
+    <style type="text/css">
+        .pubg_table {
+            /*overflow: auto;*/
+            white-space: nowrap;
+        }
+
+        .pubg_table table {
+            border-collapse: collapse;
+            border: 2px solid rgb(0, 0, 0);
+        }
+
+        .pubg_table table tr:nth-child(odd) {
+            background-color: #e0e0e0;
+            border: 1px solid rgb(0, 0, 0);
+        }
+
+        .pubg_table table td {
+            border: 1px solid rgb(0, 0, 0);
+            padding: 0px 4px;
+        }
+
+        .pubg_table table th {
+            border: 1px solid rgb(0, 0, 0);
+            text-align: center;
+        }
+
+        .pubg_table thead tr:nth-child(1) {
+            background-color: #a1e6bd;
+        }
+
+
+        .pubg_table .brs1 {
+            border-right-style: none;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .pubg_table .bls1 {
+            border-left-style: none;
+            text-align: left;
+        }
+    </style>
+
+
+</body>
+
+</html>

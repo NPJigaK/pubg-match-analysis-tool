@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PUBG戦績分析システム</title>
+
+    <!--jquery-->
+    <script type="text/javascript" src="../assets/vendor/jquery-3.3.1.min.js"></script>
+    
+    <!--必須JS-->
+    <script src="../assets/js/record.js"></script>
+    <script src="../assets/js/gesStatus.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <!--script type="text/javascript" src="//cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.18/cr-1.5.0/datatables.min.js"></script>-->
+
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/fixedheader/3.1.5/js/dataTables.fixedHeader.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
+    <script type="text/javascript"
+        src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/js/dataTables.checkboxes.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/loading.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/css/dashboard.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/css/record.css" />
+    <!--link rel="stylesheet" type="text/css" href="//cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.18/cr-1.5.0/datatables.min.css" -->
+    <link rel="stylesheet" type="text/css"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/fixedheader/3.1.5/css/fixedHeader.bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css" />
+    <link type="text/css"
+        href="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/css/dataTables.checkboxes.css"
+        rel="stylesheet" />
+
+
+    <script>
+        window.addEventListener('DOMContentLoaded', async function () {
+            //*---------------------------*//
+            //ログインチェック
+            //login_check();
+        })
+
+        window.addEventListener('load', function () {
+            //*---------------------------*//
+            //日付入力
+            //getDate();
+
+        })
+        //*---------------------------*//
+        //戻ってきたときにもう一度同じリスト表示
+        window.onpageshow = function () {
+            
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <input type="button" value="戻る" onclick="history.back()">
+    <input type="button" id="record_download_button" value="戦績画像ダウンロード" onclick="record_img_download()">
+    <br><br>
+    <span>ついでに</span><br>
+    <div id="playerNames" style="display: inline-block"></div>
+    <span>の</span>
+    <input type="button" value="戦績を表示" onclick="reSearch()">
+    <div id="reslutTable"></div>
+    <p id="main-content"></p>
+
+    <br><br><br><br><br><br><br><br>
+    <a id="getImage" href="" style="display:none;" download="image.jpeg">画像保存</a>
+
+
+    <script>
+        var responseData;
+        var cl = JSON.parse(sessionStorage.getItem("old_checkList"));
+        var name = cl[0].name;
+
+        function reSearch(){
+            setLoading();
+            //console.log($('#player').val())
+            init(responseData, $('#player').val());
+        }
+
+        playerrecord();
+        async function init(playerrecords, nm) {
+
+            console.log(playerrecords)
+            console.log(nm)
+            var html = await getplayertabls(playerrecords, nm);
+            document.getElementById("reslutTable").innerHTML = html;
+
+            var recordData = await initrecord(cl, nm);
+            console.log(recordData)
+            html += await getresluttabls(recordData, nm);
+            document.getElementById("reslutTable").innerHTML = html;
+
+
+            html += await getweaptabls(recordData);
+            document.getElementById("reslutTable").innerHTML = html;
+
+            
+            var dataList = '<input type="search" autocomplete="on" id="player" list="names"><datalist id="names">';
+            for (var i = 0; i < responseData.length; i++) {
+                dataList += `<option value="${responseData[i].name}">`;
+            }
+            dataList += '</datelist>';
+            document.getElementById("playerNames").innerHTML =  dataList;
+            removeLoading();
+        }
+        async function playerrecord() {
+            setLoading();
+            var urls = new Array(0);
+            for (var i = 0; i < cl.length; i++) {
+                urls.push(cl[i].matchId);
+            }
+            if (urls.length === 0) {
+            } else {
+                responseData = await getStatus(cl[0].platform, urls);
+
+                init(responseData, name);
+
+                removeLoading();
+            }
+        }
+
+        function setLoading() {
+            document.getElementById("main-content").innerHTML =
+                `<div class="loading"> <div class="loader"> <div class="loader--dot"></div><div class="loader--dot"></div><div class="loader--dot"></div><div class="loader--dot"></div><div class="loader--dot"></div><div class="loader--dot"></div><div class="loader--text"></div></div></div>`;
+        }
+        $("#record_download_button").hide();
+        function removeLoading() {
+            document.getElementById("main-content").innerHTML = ``;
+            $("#record_download_button").show();
+        }
+
+    </script>
+
+</body>
+
+</html>

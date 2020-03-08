@@ -1,4 +1,4 @@
-const MATCH_LIST_PAGE_URL = "matches.html";
+const MATCH_LIST_PAGE_URL = "../matches/";
 const API_KEY_LIST_KEY = "apikeyList";
 const APIKEY_KEY = "apiKey";
 const CURRENT_TIME_KEY = "currentTime";
