@@ -29,8 +29,10 @@
                     <div class="search">
                         <div class="box_dot">
                             <div id="record_and_ranking">
-                                <button id="ranking" class="steinsButton" onclick="click_ranking_button()">戦績＆偏差値ランキング</button>
-                                <button id="record" class="steinsButton" onclick="click_record_button()">個人戦績詳細分析-ヒット率</button><br>
+                                <button id="ranking" class="steinsButton"
+                                    onclick="click_ranking_button()">戦績＆偏差値ランキング</button>
+                                <button id="record" class="steinsButton"
+                                    onclick="click_record_button()">個人戦績詳細分析-ヒット率</button><br>
                                 ※<span style="color:firebrick">チェック</span>を付けた試合のみ対象です！複数試合選択出来ます！
                             </div>
                         </div>
@@ -117,21 +119,29 @@
         function click_record_button() {
             var checkList = getCheckedList();
             console.log(checkList);
-            sessionStorage.setItem(`old_checkList`, JSON.stringify(checkList));
-            window.location.href = '../record';
+            if (checkList.length > 0) {
+                sessionStorage.setItem(`old_checkList`, JSON.stringify(checkList));
+                window.location.href = '../record';
+            } else {
+                alert("1試合以上チェックを入れてください！")
+            }
         }
 
         function click_ranking_button() {
             var checkList = getCheckedList();
             console.log(checkList);
-            sessionStorage.setItem(`old_checkList`, JSON.stringify(checkList));
-            window.location.href = '../ranking';
+            if (checkList.length > 0) {
+                sessionStorage.setItem(`old_checkList`, JSON.stringify(checkList));
+                window.location.href = '../ranking';
+            } else {
+                alert("1試合以上チェックを入れてください！")
+            }
         }
 
         function getCheckedList() {
             var checks = document.getElementsByTagName("INPUT");
             var checkedList = [];
-            for (var i = 0 ; i < checks.length ; ++i) {
+            for (var i = 0; i < checks.length; ++i) {
                 if (checks[i].type == "checkbox" && checks[i].checked) {
                     var tr = (checks[i].parentNode.parentNode);
                     checkedList.push({
