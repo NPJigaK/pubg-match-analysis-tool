@@ -12,6 +12,10 @@ pubg-match-analysis-system
 [こちら](https://kagijpn.github.io/pubg-match-analysis-tool/top/)
 から本ツールを利用することが出来ます。
 
+利用推奨環境
+Google chrome
+※ **AddBlock** 系をブラウザに導入していると、正常に動作しません。
+
 ## SteinsGG との相違点
 データを取得するに当たって、API Key が必要になりました。
 検索する際、今までのように **REGION**, **PUBG NAME** の他に **API Key** を入力して頂きます。
