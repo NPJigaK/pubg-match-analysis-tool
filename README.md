@@ -9,6 +9,9 @@ pubg-match-analysis-system
 今回の **pubg-match-analysis-system** はデータの取得から処理まですべてブラウザの処理に任せています。
 そのため、裏でサーバーを動かす必要がなくなり、コストを限りなく0にすることが出来たため、このようにもう一度サービスを展開することが出来ました。
 
+[こちら](https://kagijpn.github.io/pubg-match-analysis-tool/top/)
+から本ツールを利用することが出来ます。
+
 ## SteinsGG との相違点
 データを取得するに当たって、API Key が必要になりました。
 検索する際、今までのように **REGION**, **PUBG NAME** の他に **API Key** を入力して頂きます。
