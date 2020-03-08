@@ -1,4 +1,4 @@
-pubg-match-analysis-system
+pubg-match-analysis-tool
 ====
 
 本ツールは PLAYERUNKNOWN'S BATTLEGROUNDS の分析システムであった、**SteinsGG** の機能を移植したWebアプリケーションです。
@@ -6,7 +6,7 @@ pubg-match-analysis-system
 以前運用していたサイトは、私のほうでサーバーを動かしており、そちらでデータの取得や処理を行っていました。
 しかし、サーバーを24時間365日動かすのはとても負担があったため、サービスを終了させました。
 
-今回の **pubg-match-analysis-system** はデータの取得から処理まですべてブラウザの処理に任せています。
+今回の **pubg-match-analysis-tool** はデータの取得から処理まですべてブラウザの処理に任せています。
 そのため、裏でサーバーを動かす必要がなくなり、コストを限りなく0にすることが出来たため、このようにもう一度サービスを展開することが出来ました。
 
 [こちら](https://kagijpn.github.io/pubg-match-analysis-tool/top/)
