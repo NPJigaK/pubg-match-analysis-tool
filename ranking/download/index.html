@@ -242,7 +242,10 @@
         function getDisplayImage(num) {
             //html2canvas実行
             console.log(document.getElementById(`farstTable${num}`))
-            html2canvas(document.getElementById(`farstTable${num}`)).then(function (canvas) {
+            html2canvas(document.getElementById(`farstTable${num}`), {
+                scrollX: 0,
+                scrollY: -window.scrollY
+            }).then(function (canvas) {
                 downloadImage(canvas.toDataURL())// base64形式で描画内容を出力する
             });
         }
