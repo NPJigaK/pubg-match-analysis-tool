@@ -69,7 +69,7 @@
 
             let detailMatches = await asyncFilter(
                 await asyncMap(matches, async id => {
-                    const response = await fetch(`https://api.pubg.com/shards/steam/matches/${id}`,
+                    const response = await fetch(`https://api.pubg.com/shards/${region}/matches/${id}`,
                         { headers: { 'accept': 'application/json' } },
                         { mode: 'cors' }
                     );
