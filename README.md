@@ -14,7 +14,7 @@ pubg-match-analysis-system
 
 利用推奨環境
 Google chrome
-※ **AddBlock** 系をブラウザに導入していると、正常に動作しません。
+※ **AdBlock** 系をブラウザに導入していると、正常に動作しません。
 
 ## SteinsGG との相違点
 データを取得するに当たって、API Key が必要になりました。
