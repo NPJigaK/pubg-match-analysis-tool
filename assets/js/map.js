@@ -172,11 +172,10 @@ async function getCharacters(mapJSON) {
 async function getPlayerTeams(characters, roster) {
     ranking = 1;
     for (var i = 0; i < characters[1].characters.length; i++) {
-        if (ranking < characters[1].characters[i].ranking) {
-            ranking = characters[1].characters[i].ranking
+        if (ranking < characters[1].characters[i].character.ranking) {
+            ranking = characters[1].characters[i].character.ranking
         }
     }
-
     roster.sort(function(a, b) {
         if (a.teamId < b.teamId) return -1;
         if (a.teamId > b.teamId) return 1;
@@ -186,7 +185,7 @@ async function getPlayerTeams(characters, roster) {
     for (var i = 0; i < ranking; i++) {
         resultRanking[i] = await characters[1].characters.filter(await
             function(value, index) {
-                if (value.teamId == roster[i].teamId) {
+                if (value.character.teamId == roster[i].teamId) {
                     return value;
                 }
             });
@@ -194,7 +193,7 @@ async function getPlayerTeams(characters, roster) {
 
     for (var i = 0; i < resultRanking.length; i++) {
         for (var j = 0; j < resultRanking[i].length; j++) {
-            resultRanking[i][j] = resultRanking[i][j].name;
+            resultRanking[i][j] = resultRanking[i][j].character.name;
         }
     }
     return resultRanking;
