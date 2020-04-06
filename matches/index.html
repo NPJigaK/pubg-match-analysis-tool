@@ -76,6 +76,7 @@
                     return await response.json();
                 }), async detailMatch => {
                     if (detailMatch.data.attributes.matchType != "arcade"
+                        && detailMatch.data.attributes.matchType != "event"     
                         && detailMatch.data.attributes.matchType != "training"
                         && detailMatch.data.attributes.mapName != "Range_Main") {
                         return detailMatch;
