@@ -1,49 +1,32 @@
-pubg-match-analysis-tool
-====
+# pubg-match-analysis-tool
 
-本ツールは PLAYERUNKNOWN'S BATTLEGROUNDS の分析システムであった、**SteinsGG** の機能を移植したWebアプリケーションです。
+pubg-match-analysis-tool is a web application that replicates the functionality of **SteinsGG**, a PLAYERUNKNOWN'S BATTLEGROUNDS analysis system.
 
-以前運用していたサイトは、私のほうでサーバーを動かしており、そちらでデータの取得や処理を行っていました。
-しかし、サーバーを24時間365日動かすのはとても負担があったため、サービスを終了させました。
+The previous version of this tool was running on my own server, where data retrieval and processing took place. However, maintaining a server running 24/7 became burdensome, leading to the discontinuation of the service.
 
-今回の **pubg-match-analysis-tool** はデータの取得から処理まですべてブラウザの処理に任せています。
-そのため、裏でサーバーを動かす必要がなくなり、コストを限りなく0にすることが出来たため、このようにもう一度サービスを展開することが出来ました。
+The current version of **pubg-match-analysis-tool** handles data retrieval and processing entirely within the browser. This eliminates the need for running a server in the background, allowing us to reduce the cost to virtually zero and relaunch the service.
 
-[こちら](https://kagijpn.github.io/pubg-match-analysis-tool/top/)
-から本ツールを利用することが出来ます。
+You can access and use this tool by visiting [here](https://kagijpn.github.io/pubg-match-analysis-tool/top/).
 
-利用推奨環境
-Google chrome
+## Recommended Environment
+Google Chrome
 
-※ **AdBlock** 系をブラウザに導入していると、正常に動作しません。
+Note: If you have any **AdBlock**-related extensions installed in your browser, the tool may not function properly.
 
-## SteinsGG との相違点
-データを取得するに当たって、API Key が必要になりました。
-検索する際、今までのように **REGION**, **PUBG NAME** の他に **API Key** を入力して頂きます。
-詳しくは、 [APIKEYの発行方法](#APIKEYの発行方法) をご確認ください。
+## Differences from SteinsGG
+To retrieve data, an API Key is now required. When performing a search, you will need to input the **REGION**, **PUBG NAME**, and **API Key**. For more details, please refer to the [API Key Generation](#api-key-generation) section.
 
-## APIKEYの発行方法
-[PUBG Developer Portal](https://developer.pubg.com/)で API Key を取得します。
+## API Key Generation
+You can obtain an API Key from the [PUBG Developer Portal](https://developer.pubg.com/).
 
- **GET YOUR OWN API KEY**というところを押して、言われた通りに進めていき、会員登録(無料)をします。(英語のサイトですが、そこまで難しい操作はありません)
- 
- 最終的に、下記のようなページにいくので、**API KEY** と書かれているところの文字列をコピーしておいてください。 
+Click on **GET YOUR OWN API KEY** and follow the instructions to create a free account (the website is in English, but the process is not overly complicated).
+
+Once you reach the final page as shown below, please copy the string of characters labeled **API KEY**.
 
 ![pubg-apikey](https://raw.githubusercontent.com/KagiJPN/pubg-bluezone-predictor/master/docs/resource/img/pubg-apikey.JPG)
 
-### tips
-本ツールも API Key は複数登録可能です。
-[PUBG Developer Portal](https://developer.pubg.com/)のアカウント１つで最大5つまで API Key を発行することが出来ます。
-5つ発行して登録することをお勧めします。
+### Tips
+You can register multiple API Keys for this tool as well. With a single account on the [PUBG Developer Portal](https://developer.pubg.com/), you can generate up to five API Keys. We recommend issuing and registering five API Keys.
 
-## さいごに
-なにか分からないことがありましたら、私の[ディスコードサーバー](https://discord.gg/tQp8NEN)までお気軽にご連絡ください！
-
-改善案や提案なども[ディスコードサーバー](https://discord.gg/tQp8NEN)にて、随時受け付けております。
-より良いツールにアップデートするためにも、ぜひともご協力のほどよろしくお願い申し上げます。
-
-ちなみに、[こちら](https://github.com/KagiJPN/pubg-match-analysis-tool/issues)に今後の アップデート・修正情報 をまとめています。
-アップデートした内容や最新情報は、[ディスコードサーバー](https://discord.gg/tQp8NEN) にて通知していきます。
-
-最後に、Web開発の協力者も募集してます！(Web以外でも全然OK!ディスコBOTとかも興味あり)
-私はWeb開発は趣味でしか行ったことが無いので、あまり得意ではありません。もし興味ある方がいたら是非一緒になにか作りましょう！
+## In Conclusion
+If you have any questions or need assistance, please feel free to reach out to me on [my twitter](https://twitter.com/KagiJPN)!
