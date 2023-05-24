@@ -1,3 +1,4 @@
+We have released a fully redesigned and upgraded tool. You can access it [here](https://kagijpn.github.io/pubg-match-replayer/).
 # pubg-match-analysis-tool
 
 pubg-match-analysis-tool is a PC web application that replicates the functionality of **SteinsGG**, a PLAYERUNKNOWN'S BATTLEGROUNDS analysis system.
