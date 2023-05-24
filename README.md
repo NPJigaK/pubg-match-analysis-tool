@@ -1,6 +1,6 @@
 # pubg-match-analysis-tool
 
-pubg-match-analysis-tool is a web application that replicates the functionality of **SteinsGG**, a PLAYERUNKNOWN'S BATTLEGROUNDS analysis system.
+pubg-match-analysis-tool is a PC web application that replicates the functionality of **SteinsGG**, a PLAYERUNKNOWN'S BATTLEGROUNDS analysis system.
 
 The previous version of this tool was running on my own server, where data retrieval and processing took place. However, maintaining a server running 24/7 became burdensome, leading to the discontinuation of the service.
 
