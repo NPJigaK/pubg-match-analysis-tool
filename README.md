@@ -29,3 +29,6 @@ This tool can register multiple API Keys. You can issue up to 5 API Keys per acc
 
 ## Contributing
 There may be parts of the explanation that are difficult to understand. If you have any questions, feel free to contact me on [my Twitter](https://twitter.com/KagiJPN)!
+
+## License
+This content is released under the [Apache License 2.0](https://github.com/KagiJPN/pubg-match-analysis-tool/blob/master/LICENSE). 
