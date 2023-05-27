@@ -1,33 +1,31 @@
-We have released a fully redesigned and upgraded tool. You can access it [here](https://kagijpn.github.io/pubg-match-replayer/).
+We've released a completely redesigned, upgraded tool. You can access it [here](https://kagijpn.github.io/pubg-match-replayer/).
 # pubg-match-analysis-tool
+※ 日本の方向けのドキュメントは[こちら](https://github.com/KagiJPN/pubg-match-analysis-tool/blob/master/README_JP.md)！
 
-pubg-match-analysis-tool is a PC web application that replicates the functionality of **SteinsGG**, a PLAYERUNKNOWN'S BATTLEGROUNDS analysis system.
+This tool is a web application that ports the functionality of the **SteinsGG** analysis system for PLAYERUNKNOWN'S BATTLEGROUNDS.
 
-The previous version of this tool was running on my own server, where data retrieval and processing took place. However, maintaining a server running 24/7 became burdensome, leading to the discontinuation of the service.
+The site I used to operate was run by my server, where data acquisition and processing were performed. However, it was tough on the wallet to keep the server running 24/7, so I decided to terminate the service. In this **pubg-match-analysis-tool**, all data acquisition and processing are done in the browser. This eliminated the need to run a server in the background, making it possible to reduce costs almost to zero. This is why it was possible to re-launch the service.
 
-The current version of **pubg-match-analysis-tool** handles data retrieval and processing entirely within the browser. This eliminates the need for running a server in the background, allowing us to reduce the cost to virtually zero and relaunch the service.
+You can use this tool from [here](https://kagijpn.github.io/pubg-match-analysis-tool/top/).
 
-You can access and use this tool by visiting [here](https://kagijpn.github.io/pubg-match-analysis-tool/top/).
+Recommended environment: Google Chrome
 
-## Recommended Environment
-Google Chrome
-
-Note: If you have any **AdBlock**-related extensions installed in your browser, the tool may not function properly.
+※ If you have **AdBlock** extensions installed in your browser, the tool may not work correctly.
 
 ## Differences from SteinsGG
-To retrieve data, an API Key is now required. When performing a search, you will need to input the **REGION**, **PUBG NAME**, and **API Key**. For more details, please refer to the [API Key Generation](#api-key-generation) section.
+To retrieve data, you will need an API Key. In addition to the traditional **REGION** and **PUBG NAME**, you will also need to enter your **API Key** when searching. For details, please refer to [How to Issue API Key](#How-to-Issue-API-Key).
 
-## API Key Generation
-You can obtain an API Key from the [PUBG Developer Portal](https://developer.pubg.com/).
+## How to Issue API Key
+Get your API Key at the [PUBG Developer Portal](https://developer.pubg.com/).
 
-Click on **GET YOUR OWN API KEY** and follow the instructions to create a free account (the website is in English, but the process is not overly complicated).
+Click on the **GET YOUR OWN API KEY** link and follow the instructions. Registration is free. (It's an English site, but the operations are not difficult)
 
-Once you reach the final page as shown below, please copy the string of characters labeled **API KEY**.
+Eventually, you will be taken to a page like the one below, where you should copy the string where it says **API KEY**.
 
 ![pubg-apikey](https://raw.githubusercontent.com/KagiJPN/pubg-bluezone-predictor/master/docs/resource/img/pubg-apikey.JPG)
 
 ### Tips
-You can register multiple API Keys for this tool as well. With a single account on the [PUBG Developer Portal](https://developer.pubg.com/), you can generate up to five API Keys. We recommend issuing and registering five API Keys.
+This tool can register multiple API Keys. You can issue up to 5 API Keys per account on the [PUBG Developer Portal](https://developer.pubg.com/). We recommend issuing and registering all 5.
 
-## In Conclusion
-If you have any questions or need assistance, please feel free to reach out to me on [my twitter](https://twitter.com/KagiJPN)!
+## Contributing
+There may be parts of the explanation that are difficult to understand. If you have any questions, feel free to contact me on [my Twitter](https://twitter.com/KagiJPN)!
