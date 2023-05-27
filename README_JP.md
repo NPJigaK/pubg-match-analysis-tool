@@ -1,3 +1,4 @@
+完全にリデザインした上位互換ツールをリリースしました。[こちら](https://kagijpn.github.io/pubg-match-replayer/)からアクセスできます。
 # pubg-match-analysis-tool
 
 本ツールは、PLAYERUNKNOWN'S BATTLEGROUNDSの分析システムである**SteinsGG**の機能を移植したWebアプリケーションです。
