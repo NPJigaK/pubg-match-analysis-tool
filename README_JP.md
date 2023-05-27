@@ -29,3 +29,6 @@
 
 ## Contributing
 説明が分かりづらい部分があるかもしれません。何かご不明な点がありましたら、[私のTwitter](https://twitter.com/KagiJPN)までお気軽にご連絡ください！
+
+## ライセンス
+このプロジェクトは [Apache License 2.0](https://github.com/KagiJPN/pubg-match-analysis-tool/blob/master/LICENSE) の下でライセンスされています。
